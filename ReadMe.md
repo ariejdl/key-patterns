@@ -1,12 +1,12 @@
 
-# ReadMe
+# ReadMe
 
 Key Patterns from Celtic Knotwork, experimentation from George Bain's book
 
 ![Key Pattern](https://raw.githubusercontent.com/ariejdl/key-patterns/master/images/pat1.png "Key Pattern")
 ![Key Pattern](https://raw.githubusercontent.com/ariejdl/key-patterns/master/images/pat3.png "Key Pattern")
 
-## notes
+## notes
 
 notice there are bifurcations in some key patterns
 
