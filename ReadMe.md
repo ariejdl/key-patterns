@@ -37,10 +37,34 @@ e.g. (0,0), (1,0)
 - order based key patterns
 - space filling key patterns (given an order)
 - path following key patterns (given an order)
-- improvisated key patterns, e.g. using a random seed.
+- improvised key patterns, e.g. using a random seed.
 
 ---
 
 I think 'order' means, distance along the diagonal, thus 3/1 . 12 . 3/1 means a box 3 wide 1 tall, a diagonal 12 long, and the same box at the end of the diagonal.  It could therefore be referring to the three stages in the diagram of the book, stage 1,2,3 drawing lines.  This is a different approach to the network/graph based approach I've already tried.
 
 Mitring seems to refer to the index of the triangles in the corners of repetitions.  e.g. 4.9.14.19.24 on a given edge, e.g. top or bottom = 5 less 1.
+
+...not sure but I think the order of a pattern in conjunction with space filling of inner corners (and possibly outer corners) may be able to define a pattern, i.e. the strand must be able to double back on itself wherever it goes (I suppose this is the diffference between them and knotwork as the latter can weave above or below)...I'm looking for a minimalist algorithm from to generate patterns from orders.
+
+---
+
+*pseudo-alg* idea:
+
+1. specify:
+	- order
+	- spaces down and spaces across
+	- area to fill
+- draw walls for order and walls for corners
+- fill edge (always half thickness?)
+- begin at one edge interjecting mitre line (from the acute side?), let the path follow its present direction until it is deflected by a wall, when on its current path is has no space to double back, let it double back.
+- path must always be beside a wall or edge (doubling back may be what enables exploration of a wall therefore).
+
+edge cases for it:
+
+- somewhat related:
+	- bands between can be added as additional walls as is they were horizontal or vertical edges (these may be inset first)
+	- sometimes rather than following a diagonal wall a horizontal and vertical segment cover the same spaces but leaving the wall.
+	- sometimes rather than spiraling together from opposite directions two strands jump, therefore not making a square spiral
+
+useful thing: convert pattern to fractional points (rather than decimal?) or multiply by sqrt(2)?
