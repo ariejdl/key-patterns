@@ -55,10 +55,15 @@ Mitring seems to refer to the index of the triangles in the corners of repetitio
 	- order
 	- spaces down and spaces across
 	- area to fill
-- draw walls for order and walls for corners
-- fill edge (always half thickness?)
-- begin at one edge interjecting mitre line (from the acute side?), let the path follow its present direction until it is deflected by a wall, when on its current path is has no space to double back, let it double back.
-- path must always be beside a wall or edge (doubling back may be what enables exploration of a wall therefore).
+- draw walls for:
+	- order
+	- edges
+	- and perhaps corners
+- Choose a direction.
+- Let the path follow its present direction until it is deflected by a wall
+- Path must always be beside a wall or edge (doubling back may be what enables exploration of a wall).  Preference may be for the edge which ends first.
+
+does this work for the line travelling in both directions?  Is this necessary?: when on its current path it has no space to double back, let it double back.
 
 edge cases for it:
 
@@ -66,5 +71,6 @@ edge cases for it:
 	- bands between can be added as additional walls as is they were horizontal or vertical edges (these may be inset first)
 	- sometimes rather than following a diagonal wall a horizontal and vertical segment cover the same spaces but leaving the wall.
 	- sometimes rather than spiraling together from opposite directions two strands jump, therefore not making a square spiral
+- potential solution to above: a point where departure from the line could be made
 
 useful thing: convert pattern to fractional points (rather than decimal?) or multiply by sqrt(2)?

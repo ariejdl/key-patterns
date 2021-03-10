@@ -136,5 +136,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   grid(ctx, origin, lineCount, squareWidth);
   cutlines(ctx, origin, squareWidth);
+
+  // NB:
+  // - next steps would probably be turning the above into a class
+  // - lines can then be used for intersection tests and only drawn when necessary
+  //   - might be useful https://github.com/psalaets/line-intersect/blob/master/src/check-intersection.js
+  // - can then be driven by 'order' and size etc.
   
 });
