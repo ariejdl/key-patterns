@@ -52,11 +52,11 @@ Mitring seems to refer to the index of the triangles in the corners of repetitio
 *pseudo-alg* idea:
 
 1. specify:
-	- order
+	- order/multiples
 	- spaces down and spaces across
 	- area to fill
 - draw walls for:
-	- order
+	- order/multiples
 	- edges
 	- and perhaps corners
 - Choose a direction.
