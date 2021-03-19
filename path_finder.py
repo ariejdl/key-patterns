@@ -200,10 +200,8 @@ def path_find(position, direction, walls, size):
         ])
 
         if not any_intersect(ray1, walls):
-            # recurse
             yield (stop_pt, direction1, [])
         if not any_intersect(ray2, walls):
-            # recurse
             yield (stop_pt, direction2, [])
 
     elif use_adjacent:
