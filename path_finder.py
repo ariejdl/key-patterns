@@ -106,8 +106,8 @@ def path_find(position, direction, walls, size):
             stop_pt[1] + direction2[1] * 0.5 * size
         ])
 
-        print(tuple(ray1))
-        print(tuple(ray2))
+        #print(tuple(ray1))
+        #print(tuple(ray2))
 
         if not any_intersect(ray1, walls):
             yield (stop_pt, direction1, [])
