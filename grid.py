@@ -1,75 +1,37 @@
+import numpy as np
 
-import argparse
+def diamond_grid_pos(w, h, size):
+    x1 = np.concatenate([np.full(h + 1, 0), np.arange(size, w * size, size)])
+    y1 = np.concatenate([np.arange(0, h * size, size), np.full(w, h * size)])
+    x2 = np.concatenate([np.arange(0, w * size, size), np.full(h, w * size)])
+    y2 = np.concatenate([np.full(w, 0), np.arange(0, size * h, size)])
+    return np.array([x1, y1, x2, y2]).T
 
-BASE = '''
-<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" fill="none" xmlns="http://www.w3.org/2000/svg">
+def diamond_grid_neg(w, h, size):
+    x1 = np.concatenate([np.full(h + 1, 0), np.arange(size, w * size, size)])
+    y1 = np.concatenate([np.arange(h * size, 0, -size), np.full(w, 0)])
+    x2 = np.concatenate([np.arange(0, w * size, size), np.full(h, w * size)])
+    y2 = np.concatenate([np.full(w, h * size), np.arange(h * size, 0, -size)])
+    return np.array([x1, y1, x2, y2]).T
 
-  {content}
+def diamond_grid(w, h, size):
+    return np.concatenate([
+        diamond_grid_pos(w, h, size),
+        diamond_grid_neg(w, h, size)
+    ])
 
-</svg>
-'''
-
-
-HOR_W = 12
-DIAG_H = 20.7846
-
-def up_tri(x, y):
-    return f'<path d="M{x} {y + DIAG_H}L{x + HOR_W} {y}L{x + HOR_W * 2} {y + DIAG_H}H{x}Z" fill="#cccccc"/>'
-
-def down_tri(x, y):
-    return f'<path d="M{x} {y}L{x + HOR_W} {y + DIAG_H}L{x + HOR_W * 2} {y}H{x}Z" fill="#cccccc"/>'
-
-def pos_diag(x, y):
-    return f'<path d="M{x} {y + DIAG_H}L{x + HOR_W} {y}" stroke="black" stroke-linecap="round"/>'
-
-def neg_diag(x, y):
-    return f'<path d="M{x} {y}L{x + HOR_W} {y + DIAG_H}" stroke="black" stroke-linecap="round"/>'
-    pass
-
-def hor(x, y):
-    return f'<path d="M{x} {y}H{x + HOR_W * 2}" stroke="black" stroke-linecap="round"/>'
-
-def grid(n_cols, n_rows):
-    for y in range(n_rows):
-        for x in range(n_cols):
-            # triangles
-            # even row
-            yield up_tri(x * HOR_W * 2, DIAG_H * y * 2)
-            yield down_tri(x * HOR_W * 2 + HOR_W, DIAG_H * y * 2)
-            # odd row
-            yield up_tri(x * HOR_W * 2 + HOR_W, DIAG_H + DIAG_H * y * 2)
-            yield down_tri(x * HOR_W * 2, DIAG_H * y * 2 + DIAG_H)
-
-            # diagonal lines
-            # even row
-            yield pos_diag(x * HOR_W * 2, DIAG_H * y * 2)
-            yield neg_diag(x * HOR_W * 2 + HOR_W, DIAG_H * y * 2)
-            # odd row
-            yield pos_diag(x * HOR_W * 2 + HOR_W, DIAG_H * y * 2 + DIAG_H)
-            yield neg_diag(x * HOR_W * 2, DIAG_H * y * 2 + DIAG_H)
-
-            # horizontal lines
-            # even row
-            yield hor(x * HOR_W * 2 + HOR_W, DIAG_H * y * 2)
-            # odd row
-            yield hor(x * HOR_W * 2, DIAG_H * y * 2 + DIAG_H)
-
-if __name__ == "__main__":
-    # example usage:
-    # python grid.py 10 10 > out.svg
-
-    parser = argparse.ArgumentParser(description='Make a triangle grid')
-    parser.add_argument('width', type=int, help='grid width')
-    parser.add_argument('height', type=int, help='grid height')
-    args = parser.parse_args()
+def square_grid(w, h, size):
+    hor_x1 = np.full(h + 1, 0)
+    hor_x2 = np.full(h + 1, w * size)
+    hor_y1 = np.arange(0, (h + 1) * size, size)
+    hor_y2 = hor_y1
     
-    parts = []
-    w, h = args.width, args.height
-    for el in grid(w, h):
-        parts.append(el)
+    ver_x1 = np.arange(0, (w + 1) * size, size)
+    ver_x2 = ver_x1
+    ver_y1 = np.full(w + 1, 0)
+    ver_y2 = np.full(w + 1, h * size)
     
-    print(BASE.format(
-        content="\n".join(parts),
-        width=w * HOR_W * 2 + HOR_W,
-        height=h * DIAG_H * 2
-    ))
+    return np.concatenate([
+            np.array([hor_x1, hor_y1, hor_x2, hor_y2]).T,
+            np.array([ver_x1, ver_y1, ver_x2, ver_y2]).T
+        ])
