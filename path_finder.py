@@ -53,15 +53,6 @@ def path_find(position, direction, walls, size):
                 else:
                     adjacent.append((np.array(wall), *i_point2))
 
-
-            '''
-            i_point = point_adjacent(
-                np.array(position), vns, wall, 0.25 * size)
-
-            if i_point is not None:
-                adjacent.append((np.array(wall), *i_point))
-            '''
-
         point = intersect(ray, wall)
         if point is not None:
             intersecting.append((point, wall, dist(*point, *position)))
@@ -76,29 +67,9 @@ def path_find(position, direction, walls, size):
 
     if len(adjacent):
         # find furthest end of nearest adjacent that is still past position
-        #nearest_adj_wall, adj_end, d, n = sorted(adjacent, key=lambda v: v[2])[0]
-        nearest_adj_wall, adj_end, d, n = sorted(
+        nearest_adj_wall, adj_end, _, n = sorted(
             adjacent, key=lambda v: dist(*v[1], *position))[0]
-        #adj_end = end + d/2 * n
         n *= -1
-        #import pdb; pdb.set_trace()
-        '''
-        valid_ends = []
-        for adj_wall, ipt, d, n in adjacent:
-            for end in adj_wall.reshape(2,2):
-                is_adj = point_adjacent(
-                    np.array(end),
-                    vector_normals(*direction),
-                    ray, d)
-                adj_wall_remainder_len = dist(*end, *ipt)
-                if is_adj and adj_wall_remainder_len > 0:
-                    # calc remaining vector
-                    delta = np.array(end) - np.array(ipt)
-                    valid_ends.append((adj_wall, end, adj_wall_remainder_len, delta, n))
-
-        print('*', valid_ends)
-        nearest_adj_wall, adj_end, _, remain, n = sorted(valid_ends, key=lambda v: v[2])[0]
-        '''
         
     if len(intersecting) and not len(adjacent):
         use_intersect = True
@@ -110,8 +81,10 @@ def path_find(position, direction, walls, size):
         else:
             use_adjacent = True
 
+    if use_intersect:
+        print(d, norm_scaled, stop_pt)
     #print(tuple(ray))
-    #print(len(intersecting), len(adjacent), use_intersect, use_adjacent)
+    print(len(intersecting), len(adjacent), use_intersect, use_adjacent)
 
     if use_intersect:
         segment = np.array([
@@ -136,8 +109,8 @@ def path_find(position, direction, walls, size):
             stop_pt[1] + direction2[1] * 0.5 * size
         ])
 
-        #print(tuple(ray1))
-        #print(tuple(ray2))
+        print(tuple(ray1))
+        print(tuple(ray2))
 
         if not any_intersect(ray1, walls):
             yield (stop_pt, direction1, [])
