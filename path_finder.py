@@ -35,12 +35,32 @@ def path_find(position, direction, walls, size):
         # may want to change this so its from 'position' not 'ray'
         if lines_parallel(tuple(ray), tuple(wall)):
 
+            vns = vector_normals(*direction)
+
+            # could check wall start and end against ray here instead
+            # then pick further end
+            end1, end2 = np.array(wall).reshape(2,2)
+            i_point1 = point_adjacent(end1, vns, ray, 0.25 * size)
+            i_point2 = point_adjacent(end2, vns, ray, 0.25 * size)
+            if i_point1 is not None and i_point2 is None:
+                adjacent.append((np.array(wall), *i_point1))
+            elif i_point2 is not None and i_point1 is None:
+                adjacent.append((np.array(wall), *i_point2))
+            elif i_point1 is not None and i_point2 is not None:
+                # find point that is further away
+                if dist(*end1, *position) > dist(*end2, *position):
+                    adjacent.append((np.array(wall), *i_point1))
+                else:
+                    adjacent.append((np.array(wall), *i_point2))
+
+
+            '''
             i_point = point_adjacent(
-                np.array(position),
-                vector_normals(*direction), wall, 0.25 * size)
+                np.array(position), vns, wall, 0.25 * size)
 
             if i_point is not None:
                 adjacent.append((np.array(wall), *i_point))
+            '''
 
         point = intersect(ray, wall)
         if point is not None:
@@ -55,6 +75,14 @@ def path_find(position, direction, walls, size):
         stop_pt = np.array(pt) + np.array(direction) * -0.5 * size * norm_scaled
 
     if len(adjacent):
+        # find furthest end of nearest adjacent that is still past position
+        #nearest_adj_wall, adj_end, d, n = sorted(adjacent, key=lambda v: v[2])[0]
+        nearest_adj_wall, adj_end, d, n = sorted(
+            adjacent, key=lambda v: dist(*v[1], *position))[0]
+        #adj_end = end + d/2 * n
+        n *= -1
+        #import pdb; pdb.set_trace()
+        '''
         valid_ends = []
         for adj_wall, ipt, d, n in adjacent:
             for end in adj_wall.reshape(2,2):
@@ -68,7 +96,9 @@ def path_find(position, direction, walls, size):
                     delta = np.array(end) - np.array(ipt)
                     valid_ends.append((adj_wall, end, adj_wall_remainder_len, delta, n))
 
+        print('*', valid_ends)
         nearest_adj_wall, adj_end, _, remain, n = sorted(valid_ends, key=lambda v: v[2])[0]
+        '''
         
     if len(intersecting) and not len(adjacent):
         use_intersect = True
@@ -80,7 +110,7 @@ def path_find(position, direction, walls, size):
         else:
             use_adjacent = True
 
-    #print(ray)
+    #print(tuple(ray))
     #print(len(intersecting), len(adjacent), use_intersect, use_adjacent)
 
     if use_intersect:
@@ -121,14 +151,14 @@ def path_find(position, direction, walls, size):
         if proposed_double_bk[0] > max_x or \
             proposed_double_bk[1] > max_y:
             # out of bounds, so end with this line
-            yield (np.array(position) + np.array(direction) * remain, None, [])
+            yield (end, None, [])
             return
 
         # - if in bounds then double back along the adjacent wall and recurse
         # doubling back:
         # - 1/4 past end of line
         d = np.array(direction)
-        past_end = np.array(position) + (remain) + (d * size / 4)
+        past_end = end + (d * size / 4)
         # - 1/2 distance in direction of normal closest to end
         new_start = past_end + n * size/2
         parts = [
