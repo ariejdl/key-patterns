@@ -32,21 +32,26 @@ def path_find(position, direction, walls, size):
     adjacent = []
     intersecting = []
     for wall in walls:
-        # may want to change this so its from 'position' not 'ray'
         if lines_parallel(tuple(ray), tuple(wall)):
 
             vns = vector_normals(*direction)
 
-            # could check wall start and end against ray here instead
+            # check wall start and wall end against ray here
             # then pick further end
+            # also filter so that has positive length
             end1, end2 = np.array(wall).reshape(2,2)
             i_point1 = point_adjacent(end1, vns, ray, 0.25 * size)
             i_point2 = point_adjacent(end2, vns, ray, 0.25 * size)
-            if i_point1 is not None and i_point2 is None:
+            pt1_zero_len = i_point1 is not None and tuple(i_point1[0]) == tuple(position)
+            pt2_zero_len = i_point2 is not None and tuple(i_point2[0]) == tuple(position)
+            pt1_ok = i_point1 is not None and not pt1_zero_len
+            pt2_ok = i_point2 is not None and not pt2_zero_len
+
+            if pt1_ok and not pt2_ok:
                 adjacent.append((np.array(wall), *i_point1))
-            elif i_point2 is not None and i_point1 is None:
+            elif pt2_ok and not pt1_ok:
                 adjacent.append((np.array(wall), *i_point2))
-            elif i_point1 is not None and i_point2 is not None:
+            elif pt1_ok and pt2_ok:
                 # find point that is further away
                 if dist(*end1, *position) > dist(*end2, *position):
                     adjacent.append((np.array(wall), *i_point1))
@@ -84,7 +89,8 @@ def path_find(position, direction, walls, size):
     elif len(adjacent) and not len(intersecting):
         use_adjacent = True
     elif len(intersecting) and len(adjacent):
-        if dist(*position, *stop_pt) < dist(*position, *adj_end):
+        # <= important, intersection is preferred
+        if dist(*position, *stop_pt) <= dist(*position, *adj_end):
             use_intersect = True
         else:
             use_adjacent = True
@@ -115,8 +121,8 @@ def path_find(position, direction, walls, size):
             stop_pt[1] + direction2[1] * 0.5 * size
         ])
 
-        print(tuple(ray1))
-        print(tuple(ray2))
+        #print(tuple(ray1))
+        #print(tuple(ray2))
 
         if not any_intersect(ray1, walls):
             yield (stop_pt, direction1, [])
