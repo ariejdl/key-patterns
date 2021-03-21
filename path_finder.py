@@ -61,9 +61,17 @@ def path_find(position, direction, walls, size):
     use_adjacent = False
     if len(intersecting):
         pt, wall, _ = sorted(intersecting, key=lambda v: v[2])[0]
-        d = np.array(direction)
-        norm_scaled = 1 / abs(d).sum()
-        stop_pt = np.array(pt) + np.array(direction) * -0.5 * size * norm_scaled
+        n1, n2 = vector_normals(*line_to_vector(wall)) * size * 0.25
+        adj_wall_1 = (np.array(wall).reshape(2,2) + n1).reshape(4)
+        adj_wall_2 = (np.array(wall).reshape(2,2) + n2).reshape(4)
+        d1 = pt + n1
+        d2 = pt + n2
+        nearer_wall = adj_wall_1 if \
+                dist(*position, *d1) < dist(*position, *d2) else \
+                adj_wall_2
+        stop_pt = intersect(nearer_wall, ray)
+        if stop_pt is None:
+            raise Exception()
 
     if len(adjacent):
         # find furthest end of nearest adjacent that is still past position
@@ -81,10 +89,8 @@ def path_find(position, direction, walls, size):
         else:
             use_adjacent = True
 
-    if use_intersect:
-        print(d, norm_scaled, stop_pt)
     #print(tuple(ray))
-    print(len(intersecting), len(adjacent), use_intersect, use_adjacent)
+    #print(len(intersecting), len(adjacent), use_intersect, use_adjacent)
 
     if use_intersect:
         segment = np.array([
@@ -119,7 +125,6 @@ def path_find(position, direction, walls, size):
 
     elif use_adjacent:
         end = adj_end
-        #print('*', end)
         proposed_double_bk = np.array(end) + np.array(direction) * size
         if proposed_double_bk[0] > max_x or \
             proposed_double_bk[1] > max_y:
