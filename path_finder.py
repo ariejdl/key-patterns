@@ -96,7 +96,7 @@ def path_find(position, direction, walls, size):
             use_adjacent = True
 
     #print(tuple(ray))
-    #print(len(intersecting), len(adjacent), use_intersect, use_adjacent)
+    print(len(intersecting), len(adjacent), use_intersect, use_adjacent)
 
     if use_intersect:
         segment = np.array([
