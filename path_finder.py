@@ -28,13 +28,16 @@ def path_find(position, direction, walls, size):
         position[0] + direction[0] * max_d * size,
         position[1] + direction[1] * max_d * size
     ])
+
+    #print('ray', tuple(ray))
     
     adjacent = []
     intersecting = []
     for wall in walls:
         if lines_parallel(tuple(ray), tuple(wall)):
-
             vns = vector_normals(*direction)
+
+            #print('par', wall)
 
             # check wall start and wall end against ray here
             # then pick further end
@@ -60,6 +63,7 @@ def path_find(position, direction, walls, size):
 
         point = intersect(ray, wall)
         if point is not None:
+            #print('int', tuple(wall))
             intersecting.append((point, wall, dist(*point, *position)))
 
     use_intersect = False
@@ -95,8 +99,7 @@ def path_find(position, direction, walls, size):
         else:
             use_adjacent = True
 
-    #print(tuple(ray))
-    print(len(intersecting), len(adjacent), use_intersect, use_adjacent)
+    #print(len(intersecting), len(adjacent), use_intersect, use_adjacent)
 
     if use_intersect:
         segment = np.array([
