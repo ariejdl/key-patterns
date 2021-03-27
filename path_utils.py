@@ -96,3 +96,7 @@ def get_min_max_walls(walls):
         np.array(walls)[:,3]
     ])
     return [xs.min(), xs.max(), ys.min(), ys.max()]
+
+def simple_wall(p_, vec, len):
+    p = np.array(p_)
+    return np.array([*p, *(p + np.array(vec) * len )])

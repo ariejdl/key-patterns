@@ -135,7 +135,9 @@ def path_find(position, direction, walls, size):
     elif use_adjacent:
         end = adj_end
         proposed_double_bk = np.array(end) + np.array(direction) * size
-        if proposed_double_bk[0] > max_x or \
+        if proposed_double_bk[0] < min_x or \
+            proposed_double_bk[1] < min_y or \
+            proposed_double_bk[0] > max_x or \
             proposed_double_bk[1] > max_y:
             # out of bounds, so end with this line
             yield (end, None, [])
