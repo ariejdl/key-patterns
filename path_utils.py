@@ -100,3 +100,10 @@ def get_min_max_walls(walls):
 def simple_wall(p_, vec, len):
     p = np.array(p_)
     return np.array([*p, *(p + np.array(vec) * len )])
+
+def wall_continuous(start, segments):
+    pos = start
+    for direction, length in segments:
+        new_wall = simple_wall(np.array(pos), direction, length)
+        pos = new_wall[2:]
+        yield new_wall
